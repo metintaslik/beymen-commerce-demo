@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  order-db:
+    image: postgres:latest
+    environment:
+        POSTGRES_USER: sa
+        POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD}
+        POSTGRES_DB: orders
+    volumes:
+        - ./order.init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+        - "5435:5432"
+  
+  stock-db:
+    image: postgres:latest
+    environment:
+        POSTGRES_USER: sa
+        POSTGRES_PASSWORD: ${STOCK_DB_PASSWORD}
+        POSTGRES_DB: stocks
+    volumes:
+        - ./stock.init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+        - "5436:5432"
+
+  notification-db:
+    image: postgres:latest
+    environment:
+        POSTGRES_USER: sa
+        POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+        POSTGRES_DB: logs
+    volumes:
+        - ./notification.init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+        - "5437:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
